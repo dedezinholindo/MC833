@@ -1,18 +1,18 @@
 /******************************************************************************
- * server.c
+ * servidor.c
  *
  * Servidor TCP concorrente para gerenciamento de filmes.
  * Usa threads para lidar com múltiplos clientes simultâneos.
  * Armazena dados em arquivo CSV (movies.csv).
  *
  * Compilação:
- *   gcc -o server server.c -lpthread
+ *   gcc -o server servidor.c -lpthread
  *
  * Execução:
- *   ./server <porta>
+ *   ./servidor <porta>
  *
  * Exemplo de uso:
- *   ./server 12345
+ *   ./servidor 7777
  *
  ******************************************************************************/
 
