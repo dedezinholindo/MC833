@@ -228,7 +228,7 @@ void removeMovie(int id, char* response) {
 
     if (index == -1) {
         // Se não encontrar o filme no array, retorna erro
-        sprintf(response, "Erro: Filme com ID %d não existe.\n", id);
+        sprintf(response, "Erro: Filme com ID %d não encontrado.\n", id);
         return;
     }
 
