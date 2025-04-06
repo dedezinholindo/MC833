@@ -1,18 +1,14 @@
 /******************************************************************************
- * Arquivo cliente.c
- *
- * Cliente TCP para consultar/cadastrar/remover filmes em um servidor.
- *
- * Compilação:
- *   gcc -o cliente cliente.c
- *
- * Execução:
- *   ./cliente <IP_do_servidor> <porta>
- *
- * Exemplo de uso:
- *   ./cliente 127.0.0.1 12345
- *
+ * Implementação de cliente TCP para consultar/cadastrar/remover informações de
+ * filmes em um servidor.
+ * - Compilação:
+ *      gcc -o cliente cliente.c
+ * - Execução:
+ *      ./cliente <IP_do_servidor> <porta desejada>
+ * - Exemplo de uso:
+ *      ./cliente 127.0.0.1 8000
  ******************************************************************************/
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +18,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#define BUFFER_SIZE 1024
+
+#define BUFFER_SIZE 1024    // Tamanho em bits do buffer para comunicação
+
 
 /* Função auxiliar para ler string do usuário */
 void readLine(char* buffer, int size) {
@@ -35,8 +33,11 @@ void readLine(char* buffer, int size) {
     }
 }
 
+
+/* Função principal do cliente */
 int main(int argc, char* argv[]) {
     if (argc < 3) {
+        // Caso não tenha IP ou porta informada, exibe mensagem de ajuda
         printf("Uso: %s <IP_do_servidor> <porta>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
@@ -44,14 +45,14 @@ int main(int argc, char* argv[]) {
     const char* serverIp = argv[1];
     int port = atoi(argv[2]);
 
-    /* Cria socket */
+    // Cria socket
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
         perror("Erro ao criar socket");
         exit(EXIT_FAILURE);
     }
 
-    /* Configura endereço do servidor */
+    // Configura endereço do servidor
     struct sockaddr_in serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
@@ -62,7 +63,7 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    /* Conecta ao servidor */
+    // Conecta ao servidor
     if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
         perror("Erro na conexão");
         close(sock);
@@ -71,7 +72,7 @@ int main(int argc, char* argv[]) {
 
     printf("Conectado ao servidor %s:%d\n", serverIp, port);
 
-    /* Loop do menu */
+    // Loop do menu
     while (1) {
         printf("\n==============================================\n");
         printf("          MENU DE OPÇÕES\n");
@@ -80,11 +81,11 @@ int main(int argc, char* argv[]) {
         printf("1. Cadastrar um novo filme\n");
         printf("2. Adicionar um novo gênero a um filme\n");
         printf("3. Remover um filme pelo identificador\n");
-        printf("4. Listar todos os títulos de filmes (ID - Título)\n");
+        printf("4. Listar todos os títulos de filmes com seus identificadores\n");
         printf("5. Listar informações de todos os filmes\n");
-        printf("6. Listar informações de um filme específico (ID)\n");
+        printf("6. Listar informações de um filme específico\n");
         printf("7. Listar todos os filmes de um determinado gênero\n");
-        printf("0. Sair\n");
+        printf("0. Encerrar conexão\n");
         printf("Escolha uma opção: ");
 
         char buffer[BUFFER_SIZE];
@@ -115,10 +116,10 @@ int main(int argc, char* argv[]) {
                 printf("Digite o ano de lançamento (YYYY): ");
                 readLine(yearStr, sizeof(yearStr));
 
-                printf("Digite os gêneros (separados por ponto-e-vírgula): ");
+                printf("Digite os gêneros (separados por ponto-e-vírgula e sem espaço): ");
                 readLine(genres, sizeof(genres));
 
-                // Envia title
+                // Envia título
                 send(sock, title, strlen(title), 0);
                 usleep(100000);
 
@@ -142,7 +143,7 @@ int main(int argc, char* argv[]) {
             } break;
 
             case 2: {
-                // (2) Adicionar gênero a um filme
+                // (2) Adicionar um novo gênero a um filme
                 char idStr[20], genre[100];
 
                 printf("Digite o ID do filme: ");
@@ -167,7 +168,7 @@ int main(int argc, char* argv[]) {
             } break;
 
             case 3: {
-                // (3) Remover filme
+                // (3) Remover um filme pelo identificador
                 char idStr[20];
 
                 printf("Digite o ID do filme a remover: ");
@@ -185,7 +186,7 @@ int main(int argc, char* argv[]) {
             } break;
 
             case 4: {
-                // (4) Listar todos os títulos
+                // (4) Listar todos os títulos de filmes com seus identificadores
                 // Recebe resposta
                 memset(buffer, 0, sizeof(buffer));
                 int bytesRead = recv(sock, buffer, sizeof(buffer), 0);
@@ -195,7 +196,7 @@ int main(int argc, char* argv[]) {
             } break;
 
             case 5: {
-                // (5) Listar info de todos
+                // (5) Listar informações de todos os filmes
                 // Recebe resposta
                 memset(buffer, 0, sizeof(buffer));
                 int bytesRead = recv(sock, buffer, sizeof(buffer), 0);
@@ -205,7 +206,7 @@ int main(int argc, char* argv[]) {
             } break;
 
             case 6: {
-                // (6) Listar info de um
+                // (6) Listar informações de um filme específico
                 char idStr[20];
                 printf("Digite o ID do filme: ");
                 readLine(idStr, sizeof(idStr));
@@ -222,7 +223,7 @@ int main(int argc, char* argv[]) {
             } break;
 
             case 7: {
-                // (7) Listar filmes de um gênero
+                // (7) Listar todos os filmes de um determinado gênero
                 char genre[100];
                 printf("Digite o gênero: ");
                 readLine(genre, sizeof(genre));
@@ -249,6 +250,7 @@ int main(int argc, char* argv[]) {
 
     }
 
+    // Fecha o socket do cliente
     close(sock);
 
     return 0;
