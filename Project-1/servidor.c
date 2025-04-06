@@ -12,7 +12,7 @@
  *      - listar informações de um filme;
  *      - listar todos filmes de um gênero.
  * - Compilação:
- *      gcc -o server servidor.c -lpthread
+ *      gcc -o servidor servidor.c -lpthread
  * - Execução:
  *      ./servidor <porta desejada>
  * - Exemplo de uso:
@@ -32,8 +32,8 @@
 
 
 #define MAX_MOVIES 1000             // Máximo de filmes no sistema
-#define BUFFER_SIZE 1024            // Tamanho em bits do buffer para comunicação
 #define CSV_FILE_NAME "movies.csv"  // Nome do arquivo CSV para armazenar filmes
+#define BUFFER_SIZE 1024            // Tamanho em bits do buffer para comunicação
 
 
 /* Estrutura para armazenar informações de filme */
