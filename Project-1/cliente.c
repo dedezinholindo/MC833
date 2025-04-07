@@ -6,7 +6,7 @@
  * - Execução:
  *      ./cliente <IP_do_servidor> <porta desejada>
  * - Exemplo de uso:
- *      ./cliente 127.0.0.1 8000
+ *      ./cliente 192.168.0.20 8000
  ******************************************************************************/
 
 
